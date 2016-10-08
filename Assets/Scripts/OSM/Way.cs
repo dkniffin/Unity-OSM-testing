@@ -77,17 +77,57 @@ namespace OSM {
 		}
 
 		public int GetHeight() {
-			int height;
-
-			string tagHeight = GetTag ("height");
-
+			/* Return the height of the building, based on what OSM tags are available
+			   In descending order of preference:
+			   - height=* tag
+			   - levels * levelheight calculation
+			    - levels based on:
+			     - levels=* tag
+			     - building=* tags (building type)
+			     - options.levels
+			    - levelheight based on:
+			     - options.levelHeight
+			*/
+			int height; // In meters
+			string tagHeight = GetTag("height");
 			if (tagHeight != "") {
-				height = int.Parse (tagHeight);
-			} else {				
-				height = 1;
+				// If the height tag is defined, use it
+				// TODO: Check for various values like ft, etc (right now we assume meters)
+				height = int.Parse(tagHeight);
+			} else {
+				// Otherwise use levels for calculation
+				height = GetNumLevels() * 3; // 3m per floor
 			}
-
 			return height;
+		}
+
+		private int GetNumLevels() {
+			string tagBuildingLevels = GetTag("building:levels");
+
+			if (tagBuildingLevels != "") {
+				return int.Parse(tagBuildingLevels);
+			} else {
+				// If we don't directly have level info, infer from building type
+				string tagBuilding = GetTag ("building");
+				switch (tagBuilding) {
+				case "house":
+				case "garage":
+				case "roof": // TODO: Handle this separately
+				case "hut":
+					return 1;
+				case "school":
+					return UnityEngine.Random.Range(1, 2);
+				case "apartments":
+				case "office":
+					return UnityEngine.Random.Range(1, 5);
+				case "hospital":
+					return UnityEngine.Random.Range(3, 5);
+				case "hotel":
+					return UnityEngine.Random.Range(10, 20);
+				default:
+					return UnityEngine.Random.Range(1, 3);
+				}
+			}
 		}
 
 		public string BuildingType() {
