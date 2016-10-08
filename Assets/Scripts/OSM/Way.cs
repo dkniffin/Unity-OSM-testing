@@ -63,7 +63,7 @@ namespace OSM {
 			}
 			// In OSM, the first node and the last node are the same. In Unity, we don't need that duplication
 			vertices.RemoveAt (vertices.Count - 1);
-			return vertices;
+			return GeometryHelper.NormalizeToClockwise (vertices);
 		}
 
 		public void BuildPosition(LatLonBounds bounds) {
@@ -74,6 +74,20 @@ namespace OSM {
 
 		public Vector3 GetPosition() {
 			return position;
+		}
+
+		public int GetHeight() {
+			int height;
+
+			string tagHeight = GetTag ("height");
+
+			if (tagHeight != "") {
+				height = int.Parse (tagHeight);
+			} else {				
+				height = 1;
+			}
+
+			return height;
 		}
 
 		public string BuildingType() {
