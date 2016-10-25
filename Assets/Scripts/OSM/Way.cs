@@ -179,5 +179,72 @@ namespace OSM {
 
 			return earthRadius * 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 		}
+
+		public Color GetMaterialColor() {
+			switch(GetTag("material")) {
+			case "brick":
+			case "bricks":
+				return new Color(204,119,85);
+			case "bronze":
+				return new Color(255,238,204);
+			case "canvas":
+			case "sheet":
+			case "sheets":
+			case "tent":
+				return new Color(255,248,240);
+			case "concrete":
+				return new Color(153,153,153);
+			case "copper":
+				return new Color(160,224,208);
+			case "glass":
+			case "glas":
+			case "glassfront":
+				return new Color(232,248,248);
+			case "gold":
+				return new Color(255,204,0);
+			case "plants":
+			case "grass":
+			case "thatch":
+				return new Color(0,153,51);
+			case "metal":
+			case "steel":
+				return new Color(170,170,170);
+			case "panel":
+			case "panels":
+				return new Color(255,248,240);
+			case "plaster":
+			case "plastered":
+				return new Color(153,153,153);
+			case "roof_tiles":
+			case "tile":
+			case "tiles":
+			case "rooftiles":
+				return new Color(240,128,96);
+			case "silver":
+				return new Color(204,204,204);
+			case "slate":
+			case "slates":
+				return new Color(102,102,102);
+			case "stone":
+			case "block":
+			case "masonry":
+			case "granite":
+			case "paving_stones":
+			case "sandstone":
+				return new Color(153,102,102);
+			case "tar_paper":
+			case "asphalt":
+			case "bitumen":
+			case "roofingfelt":
+			case "shingle":
+			case "shingles":
+			case "tar":
+				return new Color(51,51,51);
+			case "wood":
+				return new Color(222,184,135);
+			default:
+				return new Color(220, 210, 200);
+			}
+		}
 	}
 }

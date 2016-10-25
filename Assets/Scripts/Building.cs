@@ -9,7 +9,7 @@ public class Building : MonoBehaviour {
 	public void AddWay(Way w) {
 		way = w;
 		UpdateMeshes ();
-//		UpdateMaterial ();
+		UpdateMaterial ();
 	}
 
 	private void UpdateMeshes () {
@@ -20,13 +20,7 @@ public class Building : MonoBehaviour {
 	}
 
 	private void UpdateMaterial() {
-		Dictionary<string, Material> materialMap = new Dictionary<string, Material>{
-			{ "police", (Material)  Resources.Load ("Materials/Building/PoliceStation") },
-			{ "fire_department", (Material) Resources.Load ("Materials/Building/FireStation") },
-			{ "medical", (Material) Resources.Load ("Materials/Building/medical") },
-			{ "unknown", (Material) Resources.Load ("Materials/Building/Default") }
-		};
-		MeshRenderer meshRenderer = GetComponent<MeshRenderer> ();
-		meshRenderer.material = materialMap [way.BuildingType ()];
+		MeshRenderer rend = GetComponent<MeshRenderer> ();
+//		rend.material.SetColor ("_EmissionColor", way.GetMaterialColor ());
 	}
 }
