@@ -7,7 +7,7 @@ public class GeometryHelper
 {
 
 	// https://forum.unity3d.com/threads/trying-extrude-a-2d-polygon-to-create-a-mesh.102629/
-	public static Mesh Extrude(Vector2 [] poly, int height)
+	public static Mesh Extrude(Vector2 [] poly, int height, float textureWidth = 1, float textureHeight = 1)
 	{
 		/* ============ Vertices ============ */
 		// convert polygon to triangles
@@ -79,18 +79,6 @@ public class GeometryHelper
 		int[] sideTriangles = new int[poly.Length * 6];
 		for(int i=0;i<poly.Length;i++)
 		{
-			
-			/*
-			int n = (i+1)%poly.Length;
-			sideTriangles[countTris] = i;
-			sideTriangles[countTris+1] = i + poly.Length;
-			sideTriangles[countTris+2] = n;
-			sideTriangles[countTris+3] = n;
-			sideTriangles[countTris+4] = i + poly.Length;
-			sideTriangles[countTris+5] = n + poly.Length;
-			countTris += 6;
-			*/
-
 			// triangles around the perimeter of the object
 			int n = (i+1)%bottomVertCount;
 			sideTriangles[countTris]   = topAndBottomVertCount + i;
@@ -106,15 +94,8 @@ public class GeometryHelper
 		m.SetTriangles (sideTriangles, 2);
 
 		/* ============ UV ============ */
-		// x -> Just the decimal component of vertices?
-		// y -> Ditto?
 		Vector2[] uv = new Vector2[vertices.Length];
 		// TODO: Top/Bottom UVs?
-
-		// TODO: Make this publicly accessible
-		float textureWidth = 2;
-		float textureHeight = 2;
-
 
 		// Since the height is the same for the entire geometry, calculate this once here.
 		float distanceBetweenTopAndBottom = Vector3.Distance (
@@ -143,17 +124,12 @@ public class GeometryHelper
 			int repeatTimesY = (int)Math.Floor (distanceBetweenTopAndBottom / textureHeight);
 			float uvY = repeatTimesY;
 
-			// Bottom UV
-			uv[bottomVertexIdx] = new Vector2(uvX, 0);
-
-			// Top UV
-			uv[topVertexIdx] = new Vector2(uvX, uvY);
+			// Set the UVs
+			uv[bottomVertexIdx] = new Vector2(uvX, 0); // Bottom
+			uv[topVertexIdx] = new Vector2(uvX, uvY); // Top
 		}
-
-
-
+			
 		m.uv = uv;
-
 
 		m.RecalculateNormals();
 		m.RecalculateBounds();
