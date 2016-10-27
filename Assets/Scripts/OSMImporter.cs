@@ -9,17 +9,22 @@ using System.Diagnostics;
 using OSM;
 
 public class OSMImporter : MonoBehaviour {
+
+	OSMData osmData = new OSMData();
+
 	public GameObject buildingPrefab;
 	private string _xmlContent;
 	private XmlReader _reader;
 	private Element _currentElement;
 
-	void Start () {
-		// Set up prefabs
-//		buildingPrefab = (GameObject)Resources.Load ("Prefabs/BuildingPrefab");
-
+	public void Import() {
 		// Import OSM Data
 		ImportOSMData ();
+
+		// Delete existing children
+		foreach (Transform child in transform) {
+			DestroyImmediate(child.gameObject);
+		}
 
 		// Draw the scene
 		DrawBuildings ();
@@ -67,19 +72,19 @@ public class OSMImporter : MonoBehaviour {
 		node.latitude = float.Parse(_reader.GetAttribute("lat"));
 		node.longitude = float.Parse(_reader.GetAttribute("lon"));
 		_currentElement = node;
-		OSMData.Instance.AddNode(node);
+		osmData.AddNode(node);
 	}
 
 	private void ParseWay() {
 		Way way = new Way ();
 		way.id = long.Parse(_reader.GetAttribute("id"));
 		_currentElement = way;
-		OSMData.Instance.AddWay(way);
+		osmData.AddWay(way);
 	}
 
 	private void ParseNd() {
 		long node_id = long.Parse(_reader.GetAttribute("ref"));
-		Node node = OSMData.Instance.GetNodeById(node_id);
+		Node node = osmData.GetNodeById(node_id);
 		(_currentElement as Way).AddNode(node);
 	}
 
@@ -95,18 +100,21 @@ public class OSMImporter : MonoBehaviour {
 		var s = double.Parse(_reader.GetAttribute("minlat"));
 		var w = double.Parse(_reader.GetAttribute("minlon"));
 
-		OSMData.Instance.SetBounds (n, e, s, w);
+		osmData.SetBounds (n, e, s, w);
 	}
 
 	private void DrawBuildings() {
-		foreach (Way way in OSMData.Instance.GetWays().Values) {
+		foreach (Way way in osmData.GetWays().Values) {
 			if (!way.HasTag("building")) {
 				continue;
 			}
 
-			way.BuildPosition (OSMData.Instance.GetBounds());
+			way.BuildPosition (osmData.GetBounds());
 
 			GameObject buildingGO = (GameObject)Instantiate(buildingPrefab, way.GetPosition(), Quaternion.identity);
+//			buildingGO.transform.SetParent (this.gameObject.transform);
+			buildingGO.transform.parent = this.transform;
+			buildingGO.name = way.id.ToString();
 			Building b = buildingGO.GetComponent<Building>();
 			b.AddWay(way);
 		}

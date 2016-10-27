@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace OSM {
-	public class OSMData : Singleton<OSMData> {
+	public class OSMData {
 		private Dictionary<long, Node> nodes = new Dictionary<long, Node> ();
 		private Dictionary<long, Way> ways = new Dictionary<long, Way>();
 		private LatLonBounds bounds = new LatLonBounds ();
