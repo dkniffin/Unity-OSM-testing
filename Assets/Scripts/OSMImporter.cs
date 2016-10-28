@@ -10,10 +10,18 @@ public class OSMImporter : MonoBehaviour {
 	OSMData osmData = new OSMData();
 
 	public GameObject buildingPrefab;
+	public double north = 36.003265;
+	public double south = 35.987988;
+	public double east = -78.891792;
+	public double west = -78.914795;
+
 
 	public void Import() {
-		// Import OSM Data
-		osmData.Import ("Assets/atc.osm");
+		// Get OSM Data
+//		MapboxDataGetter.GetOSMData(north, south, east, west);
+
+		// Add it to our dataset
+		osmData.ImportFromXML("Assets/atc.osm");
 
 		// Delete existing children
 		foreach (Transform child in transform) {

@@ -7,6 +7,7 @@ using OSM;
 
 namespace OSM {
 	public class OSMData {
+
 		private string _xmlContent;
 		private XmlReader _reader;
 		private Element _currentElement;
@@ -15,7 +16,11 @@ namespace OSM {
 		private Dictionary<long, Way> ways = new Dictionary<long, Way>();
 		private LatLonBounds bounds = new LatLonBounds ();
 
-		public void Import(string osmfilename) {
+		public void Import() {
+
+		}
+
+		public void ImportFromXML(string osmfilename) {
 			_xmlContent = File.ReadAllText (osmfilename);
 			_reader = XmlReader.Create (new StringReader (_xmlContent));
 
